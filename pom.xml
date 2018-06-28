@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>za.co.opencollab.simulator</groupId>
+	<artifactId>payment-simulator</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+<!--	<modules>
+		<module>services</module>
+		<module>frontend</module>
+	</modules>-->
+	<packaging>pom</packaging>
+
+	<name>payment-simulator</name>
+	<description>Payment simulator</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.3.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
+	<properties>
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+
+		<!-- Build settings -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<!-- Build settings -->
+		<enforcer.phase>validate</enforcer.phase>
+		<maven.min.version>3.5.2</maven.min.version>
+		<project.jdk.min.version>1.8.0</project.jdk.min.version>
+		<project.jdk.source.version>1.8</project.jdk.source.version>
+		<project.jdk.target.version>1.8</project.jdk.target.version>
+
+		<!-- NodeJS dependencies -->
+		<node.version>v8.11.2</node.version>
+		<yarn.version>v1.7.0</yarn.version>
+
+		<!-- dependency versions -->
+		<cxf.version>3.2.4</cxf.version>
+
+		<!-- plugin versions -->
+		<plugin.source.version>3.0.1</plugin.source.version>
+		<plugin.enforcer.version>1.4.1</plugin.enforcer.version>
+		<plugin.clean.version>3.1.0</plugin.clean.version>
+		<plugin.jar.version>3.1.0</plugin.jar.version>
+		<plugin.resources.version>3.1.0</plugin.resources.version>
+		<plugin.dependency.version>3.1.0</plugin.dependency.version>
+		<plugin.install.version>2.5.2</plugin.install.version>
+		<plugin.javadoc.version>3.0.0</plugin.javadoc.version>
+		<plugin.deploy.version>2.8.2</plugin.deploy.version>
+		<plugin.compiler.version>3.7.0</plugin.compiler.version>
+		<plugin.assembly.version>3.1.0</plugin.assembly.version>
+		<plugin.surefire.version>2.21.0</plugin.surefire.version>
+		<plugin.site.version>3.7.1</plugin.site.version>
+		<plugin.release.version>2.5.3</plugin.release.version>
+	</properties>
+	<scm>
+		<url>https://github.com/OpenCollabZA/payment-simulator.git</url>
+		<connection>scm:git:https://github.com/OpenCollabZA/payment-simulator.git</connection>
+		<developerConnection>scm:git:https://github.com/OpenCollabZA/payment-simulator.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	<distributionManagement>
+		<repository>
+			<name>OPENCOLLAB Release Repository</name>
+			<id>opencollab-maven-releases</id>
+			<url>https://nexus3.opencollab.co.za/repository/opencollab-maven-releases</url>
+		</repository>
+		<snapshotRepository>
+			<name>OPENCOLLAB Snapshots Repository</name>
+			<id>opencollab-maven-snapshots</id>
+			<url>https://nexus3.opencollab.co.za/repository/opencollab-maven-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<dependencyManagement>
+		<dependencies>
+<!--			<dependency>
+				<groupId>za.co.opencollab.simulator</groupId>
+				<artifactId>frontend</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>-->
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-spring-boot-starter-jaxrs</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-rs-service-description</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-features-logging</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-transports-local</artifactId>
+				<version>${cxf.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>javax.annotation</groupId>
+				<artifactId>javax.annotation-api</artifactId>
+				<version>1.3.1</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.xml.ws</groupId>
+				<artifactId>jaxws-api</artifactId>
+				<version>2.3.0</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.github.eirslett</groupId>
+					<artifactId>frontend-maven-plugin</artifactId>
+					<version>1.6</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>${plugin.enforcer.version}</version>
+					<executions>
+						<execution>
+							<id>enforce</id>
+							<goals>
+								<goal>enforce</goal>
+							</goals>
+							<phase>${enforcer.phase}</phase>
+							<configuration>
+								<rules>
+									<requireMavenVersion>
+										<message>To build this project, maven ${maven.min.version} (or
+											higher) is required. Please install the specified version.</message>
+										<version>${maven.min.version}</version>
+									</requireMavenVersion>
+									<requireJavaVersion>
+										<message>To build this project, java
+											${project.jdk.min.version} (or higher) is required. Please
+											install the specified version.</message>
+										<version>${project.jdk.min.version}</version>
+									</requireJavaVersion>
+									<requirePluginVersions>
+										<message>Build reproducibility: It is a best practice to
+											explicitly specify plugin versions!</message>
+									</requirePluginVersions>
+								</rules>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${plugin.source.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>${plugin.clean.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>${plugin.jar.version}</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${plugin.resources.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>${plugin.dependency.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>${plugin.install.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${plugin.javadoc.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>${plugin.deploy.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${plugin.compiler.version}</version>
+					<configuration>
+						<source>${project.jdk.source.version}</source>
+						<target>${project.jdk.target.version}</target>
+						<compilerArgs>
+						</compilerArgs>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>${plugin.assembly.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${plugin.surefire.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>${plugin.site.version}</version>
+					<configuration>
+						<outputEncoding>UTF-8</outputEncoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>${plugin.release.version}</version>
+					<configuration>
+						<tagBase>https://github.com/OpenCollabZA/payment-simulator.git</tagBase>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<tagNameFormat>v@{project.version}</tagNameFormat>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
