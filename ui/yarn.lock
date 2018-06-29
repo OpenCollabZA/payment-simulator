@@ -255,6 +255,10 @@
     lodash "^4.17.5"
     to-fast-properties "^2.0.0"
 
+"@clr/icons@^0.12.2":
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/@clr/icons/-/icons-0.12.2.tgz#67e1e39581daddcba59a9ff197ff108ca249fef1"
+
 "@ng-bootstrap/ng-bootstrap@^1.0.0":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@ng-bootstrap/ng-bootstrap/-/ng-bootstrap-1.1.2.tgz#276b1c488687ca3e53d1694b63835fd57ca552ca"
@@ -427,6 +431,10 @@
     "@webassemblyjs/ast" "1.4.3"
     "@webassemblyjs/wast-parser" "1.4.3"
     long "^3.2.0"
+
+"@webcomponents/custom-elements@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@webcomponents/custom-elements/-/custom-elements-1.0.0.tgz#b1726e12074b556aa31b93f36ff6a03a435259c4"
 
 abbrev@1:
   version "1.1.1"
