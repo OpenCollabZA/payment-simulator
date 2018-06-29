@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {Creditcard} from "../shared/model/creditcard";
 import {Router} from "@angular/router";
+import {CreditCardInfo} from "../shared/model/credit-card.info";
 
 @Component({
   selector: 'app-creditcard',
@@ -9,7 +9,7 @@ import {Router} from "@angular/router";
 })
 export class CreditcardComponent implements OnInit {
 
-  creditCard = new Creditcard();
+  creditCard = new CreditCardInfo();
 
   constructor() { }
 

@@ -1,6 +1,6 @@
 import {st} from "@angular/core/src/render3";
 
-export class Creditcard {
+export class CreditCardInfo {
   type: string;
   cardholder: string;
   cardnumber: string;
