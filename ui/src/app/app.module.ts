@@ -7,13 +7,15 @@ import { LandingComponent } from './landing/landing.component';
 import { CreditcardComponent } from './creditcard/creditcard.component';
 import { EftComponent } from './eft/eft.component';
 import {FormsModule} from "@angular/forms";
+import {BSControlStatusDirective} from "./shared/directive/bscontrol-status.directive";
 
 @NgModule({
   declarations: [
     AppComponent,
     LandingComponent,
     CreditcardComponent,
-    EftComponent
+    EftComponent,
+    BSControlStatusDirective
   ],
   imports: [
     BrowserModule,

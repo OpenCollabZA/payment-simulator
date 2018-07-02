@@ -19,8 +19,6 @@
     <failOnMissingWebXml>false</failOnMissingWebXml>
 
     <ui.maven.plugin.version>1.6</ui.maven.plugin.version>
-    <node.version>v8.10.0</node.version>
-    <yarn.version>v1.5.1</yarn.version>
   </properties>
 
   <build>
