@@ -1,6 +1,7 @@
 package za.co.opencollab.simulator.paygate.services;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -120,6 +121,9 @@ public class PaygateService {
     }
 
     public boolean compareChecksum(final String checksum, final PayWebRequestInfo request) throws Exception {
+        if(StringUtils.isEmpty(checksum)){
+            return false;
+        }
         return checksum.equals(generateChecksum(request, checksumKey));
     }
 }

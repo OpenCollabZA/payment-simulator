@@ -1,6 +1,7 @@
 package za.co.opencollab.simulator.paygate.util;
 
 import za.co.opencollab.simulator.paygate.dto.PayWebNotificationInfo;
+import za.co.opencollab.simulator.paygate.dto.PayWebResponseInfo;
 
 import javax.ws.rs.core.Form;
 
@@ -38,6 +39,15 @@ public final class PaygateFormUtil {
 		form.param(PARAM_PAYVAULT_DATA_1, payWebNotificationInfo.getPayvaultData1());
 		form.param(PARAM_PAYVAULT_DATA_2, payWebNotificationInfo.getPayvaultData2());
 		form.param(PARAM_CHECKSUM, payWebNotificationInfo.getChecksum());
+		return form;
+	}
+
+	public static Form createForm(PayWebResponseInfo responseInfo){
+		Form form = new Form();
+		form.param(PARAM_PAY_REQUEST_ID, responseInfo.getPayRequestId());
+		form.param(PARAM_PAYGATE_ID, Long.toString(responseInfo.getPaygateId()));
+		form.param(PARAM_REFERENCE, responseInfo.getReference());
+		form.param(PARAM_CHECKSUM, responseInfo.getChecksum());
 		return form;
 	}
 }

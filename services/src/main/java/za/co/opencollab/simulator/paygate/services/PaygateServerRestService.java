@@ -1,20 +1,25 @@
 package za.co.opencollab.simulator.paygate.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import za.co.opencollab.simulator.paygate.dto.PayWebRequestInfo;
 import za.co.opencollab.simulator.paygate.dto.PayWebResponseInfo;
 
 import javax.ws.rs.*;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import static za.co.opencollab.simulator.paygate.PaygateConstants.*;
+import static za.co.opencollab.simulator.paygate.util.PaygateFormUtil.createForm;
 
 /**
  * This rest service is used by clients that want to perform payments using the paygate simulator
  */
+@Service
 @Path("payweb3")
 public class PaygateServerRestService {
 
@@ -25,7 +30,8 @@ public class PaygateServerRestService {
     @POST
     @Path("initiate.trans")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public PayWebResponseInfo initiateTransaction(
+    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response initiateTransaction(
             @FormParam(PARAM_PAYGATE_ID) String paygateId,
             @FormParam(PARAM_REFERENCE) String reference,
             @FormParam(PARAM_AMOUNT) String amount,
@@ -55,8 +61,13 @@ public class PaygateServerRestService {
             throw new BadRequestException("Invalid checksum");
         }
 
-        return paygateService.initiateTransaction(request);
+        PayWebResponseInfo response = paygateService.initiateTransaction(request);
+        Form form = createForm(response);
+        return Response.ok()
+                .entity(form)
+                .build();
     }
+
 
     @POST
     @Path("process.trans")
