@@ -28,6 +28,12 @@ public class PaygateService {
 
     private final Map<String, PayWebRequestInfo> PAYMENTS_MAP = new HashMap<>();
 
+    /**
+     * Generates a new request to perform a transaction.
+     * @param request The request from the client.
+     * @return
+     * @throws Exception
+     */
     public PayWebResponseInfo initiateTransaction(PayWebRequestInfo request) throws Exception {
         PayWebResponseInfo info = new PayWebResponseInfo();
         info.setPayRequestId(request.getPaygateId());
@@ -44,6 +50,12 @@ public class PaygateService {
         return PAYMENTS_MAP.get(id);
     }
 
+    /**
+     * Generate the checksum for a <code>PayWebRequestInfo</code>
+     * @param request The request to create the checksum for.
+     * @return The calculated checksum
+     * @throws Exception
+     */
     protected String generateChecksum(PayWebRequestInfo request) throws Exception {
 
         String concatenatedFields = "";
@@ -69,6 +81,12 @@ public class PaygateService {
         return generateMD5Hash(concatenatedFields);
     }
 
+    /**
+     * Generate the checksum for a <code>PayWebRequestInfo</code>
+     * @param response The object to create the checksum for.
+     * @return The calculated checksum
+     * @throws Exception
+     */
     protected String generateChecksum(PayWebResponseInfo response) throws Exception {
         String concatenatedFields = "";
         concatenatedFields += String.valueOf(response.getPaygateId());
@@ -86,7 +104,7 @@ public class PaygateService {
         MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(source.getBytes());
         byte[] digest = md.digest();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (byte b : digest) {
             sb.append(String.format("%02x", b & 0xff));
         }
