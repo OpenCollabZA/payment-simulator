@@ -50,10 +50,9 @@ public class PaygateUIRestService {
     @POST
     @Path("complete")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response completeTranasction(@FormParam("PAY_REQUEST_ID") String paygateId) throws URISyntaxException {
+    public Response completeTransaction(@FormParam("PAY_REQUEST_ID") String paygateId) throws URISyntaxException {
         PayWebRequestInfo request = paygateService.getRequestForPayRequestId(paygateId);
-
-        // TODO schedule a async callback to client
+        paygateService.completeTransaction(paygateId);
 
         return Response.temporaryRedirect(new URI(request.getReturnUrl())).build();
     }

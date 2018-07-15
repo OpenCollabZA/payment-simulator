@@ -10,6 +10,8 @@ import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static za.co.opencollab.simulator.paygate.PaygateConstants.*;
+
 /**
  * This rest service is used by clients that want to perform payments using the paygate simulator
  */
@@ -24,17 +26,17 @@ public class PaygateServerRestService {
     @Path("initiate.trans")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public PayWebResponseInfo initiateTransaction(
-            @FormParam("PAYGATE_ID") String paygateId,
-            @FormParam("REFERENCE") String reference,
-            @FormParam("AMOUNT") String amount,
-            @FormParam("CURRENCY") String currency,
-            @FormParam("RETURN_URL") String returnUrl,
-            @FormParam("TRANSACTION_DATE") String transactionDate,
-            @FormParam("LOCALE") String locale,
-            @FormParam("COUNTRY") String country,
-            @FormParam("EMAIL") String email,
-            @FormParam("NOTIFY_URL") String notifyUrl,
-            @FormParam("CHECKSUM") String checksum
+            @FormParam(PARAM_PAYGATE_ID) String paygateId,
+            @FormParam(PARAM_REFERENCE) String reference,
+            @FormParam(PARAM_AMOUNT) String amount,
+            @FormParam(PARAM_CURRENCY) String currency,
+            @FormParam(PARAM_RETURN_URL) String returnUrl,
+            @FormParam(PARAM_TRANSACTION_DATE) String transactionDate,
+            @FormParam(PARAM_LOCALE) String locale,
+            @FormParam(PARAM_COUNTRY) String country,
+            @FormParam(PARAM_EMAIL) String email,
+            @FormParam(PARAM_NOTIFY_URL) String notifyUrl,
+            @FormParam(PARAM_CHECKSUM) String checksum
             ) throws Exception {
         PayWebRequestInfo request = new PayWebRequestInfo();
         request.setPaygateId(paygateId);
@@ -49,7 +51,7 @@ public class PaygateServerRestService {
         request.setNotifyUrl(notifyUrl);
         request.setChecksum(checksum);
 
-        if(!checksum.equals(paygateService.generateChecksum(request))){
+        if(!paygateService.compareChecksum(checksum, request)){
             throw new BadRequestException("Invalid checksum");
         }
 
@@ -60,8 +62,8 @@ public class PaygateServerRestService {
     @Path("process.trans")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response processTransaction(
-            @FormParam("PAY_REQUEST_ID") String paygateId,
-            @FormParam("CHECKSUM") String reference) throws URISyntaxException {
+            @FormParam(PARAM_PAY_REQUEST_ID) String paygateId,
+            @FormParam(PARAM_CHECKSUM) String reference) throws URISyntaxException {
         return Response.temporaryRedirect(new URI("angular/screen")).build();
     }
 }

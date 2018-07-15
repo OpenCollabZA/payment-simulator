@@ -5,14 +5,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import za.co.opencollab.simulator.paygate.dto.PayWebNotificationInfo;
 import za.co.opencollab.simulator.paygate.dto.PayWebRequestInfo;
 import za.co.opencollab.simulator.paygate.dto.PayWebResponseInfo;
 
-import java.security.MessageDigest;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MediaType;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import static org.apache.commons.lang.StringUtils.defaultString;
+import static za.co.opencollab.simulator.paygate.PaygateConstants.*;
+import static za.co.opencollab.simulator.paygate.util.PaygateChecksumUtil.generateChecksum;
+import static za.co.opencollab.simulator.paygate.util.PaygateFormUtil.createForm;
 
 /**
  * This service uses a map to keep track of pending transactions
@@ -24,6 +33,8 @@ public class PaygateService {
 
     @Value("${simulator.paygate.checksumKey}")
     private String checksumKey;
+
+    private Executor executor = Executors.newSingleThreadExecutor();
 
 
     private final Map<String, PayWebRequestInfo> PAYMENTS_MAP = new HashMap<>();
@@ -39,7 +50,7 @@ public class PaygateService {
         info.setPayRequestId(request.getPaygateId());
         info.setReference(request.getReference());
         info.setPayRequestId(RandomStringUtils.randomNumeric(10));
-        info.setChecksum(generateChecksum(info));
+        info.setChecksum(generateChecksum(info, checksumKey));
 
         PAYMENTS_MAP.put(info.getPayRequestId(), request);
 
@@ -50,67 +61,65 @@ public class PaygateService {
         return PAYMENTS_MAP.get(id);
     }
 
-    /**
-     * Generate the checksum for a <code>PayWebRequestInfo</code>
-     * @param request The request to create the checksum for.
-     * @return The calculated checksum
-     * @throws Exception
-     */
-    protected String generateChecksum(PayWebRequestInfo request) throws Exception {
+    private boolean sendPaymentComplete(String paygateId) throws Exception {
+        PayWebRequestInfo request = getRequestForPayRequestId(paygateId);
+        PayWebNotificationInfo response = new PayWebNotificationInfo();
 
-        String concatenatedFields = "";
-        concatenatedFields += defaultString(request.getPaygateId());
-        concatenatedFields += defaultString(request.getReference());
-        concatenatedFields += defaultString(request.getAmount());
-        concatenatedFields += defaultString(request.getCurrency());
-        concatenatedFields += defaultString(request.getReturnUrl());
-        concatenatedFields += defaultString(request.getTransactionDate());
-        concatenatedFields += defaultString(request.getLocale());
-        concatenatedFields += defaultString(request.getCountry());
-        concatenatedFields += defaultString(request.getEmail());
-        concatenatedFields += defaultString(request.getPayMethod());
-        concatenatedFields += defaultString(request.getPayMethodDetail());
-        concatenatedFields += defaultString(request.getNotifyUrl());
-        concatenatedFields += defaultString(request.getUser1());
-        concatenatedFields += defaultString(request.getUser2());
-        concatenatedFields += defaultString(request.getUser3());
-        concatenatedFields += defaultString(request.getVault());
-        concatenatedFields += defaultString(request.getVaultId());
-        concatenatedFields += checksumKey;
 
-        return generateMD5Hash(concatenatedFields);
+        response.setPaygateId(RandomStringUtils.randomNumeric(10));
+        response.setPayRequestId(request.getPaygateId());
+        response.setReference(request.getReference());
+        response.setTransactionStatus(PAYGATE_TRANSACTION_APPROVED);
+        response.setResultCode("CODE"); // TODO
+        response.setAuthCode(null); // TODO
+        response.setCurrency(request.getCurrency());
+        response.setAmount(request.getAmount());
+        response.setResultDesc("SUCCESS"); // TODO
+        response.setTransactionId("1"); // TODO
+        response.setRiskIndicator("1"); // TODO
+        response.setPayMethod("CC"); // TODO
+        response.setPayMethodDetail("Card"); // TODO
+        response.setUser1(null);
+        response.setUser2(null);
+        response.setUser3(null);
+        response.setVaultId(null);
+        response.setVaultId(null);
+        response.setPayvaultData1(null);
+        response.setPayvaultData2(null);
+        response.setChecksum(generateChecksum(response, checksumKey));
+
+        Form form = createForm(response);
+        String notifyURL = request.getNotifyUrl();
+        String serviceResponse = ClientBuilder.newClient()
+                .target(notifyURL)
+                .request(MediaType.APPLICATION_FORM_URLENCODED)
+                .post(Entity.form(form), String.class);
+
+        // Specification states that the service should reply with "OK"
+        return "OK".equals(serviceResponse);
     }
 
-    /**
-     * Generate the checksum for a <code>PayWebRequestInfo</code>
-     * @param response The object to create the checksum for.
-     * @return The calculated checksum
-     * @throws Exception
-     */
-    protected String generateChecksum(PayWebResponseInfo response) throws Exception {
-        String concatenatedFields = "";
-        concatenatedFields += String.valueOf(response.getPaygateId());
-        concatenatedFields += response.getPayRequestId();
-        concatenatedFields += response.getReference();
-        concatenatedFields += checksumKey;
+    public void completeTransaction(final String paygateId){
+        executor.execute(() -> {
+            int retries = 3;
+            // Paygate spec says it will retry 3 times
+            while(retries > 0) {
+                try {
+                    TimeUnit.SECONDS.sleep(50);
+                    boolean ok = sendPaymentComplete(paygateId);
+                    // Only if the request succeeded will we break.
+                    if(ok){
+                        break;
+                    }
 
-        return generateMD5Hash(concatenatedFields);
+                } catch (Exception ignored) {
+                    retries--;
+                }
+            }
+        });
     }
 
-
-    protected String generateMD5Hash(String source) throws Exception {
-        LOG.info(String.format("Generating checksum for \"%s\'", source));
-
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(source.getBytes());
-        byte[] digest = md.digest();
-        StringBuilder sb = new StringBuilder();
-        for (byte b : digest) {
-            sb.append(String.format("%02x", b & 0xff));
-        }
-
-        LOG.info(String.format("Generated checksum is \"%s\'", sb.toString()));
-        return sb.toString();
+    public boolean compareChecksum(final String checksum, final PayWebRequestInfo request) throws Exception {
+        return checksum.equals(generateChecksum(request, checksumKey));
     }
-
 }
