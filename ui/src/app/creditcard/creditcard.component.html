@@ -1,0 +1,67 @@
+<div class="text-center">
+  <button type="button" routerLink="/" routerLinkActive="active" class="btn btn-outline-secondary">Change Payment Type</button>
+</div>
+<br>
+<div>
+  <form #creditcardForm="ngForm">
+    <div class="form-group row">
+      <div class="col text-right">
+        <label><b>Cards Accepted</b></label>
+      </div>
+      <div class="col">
+        <label>Options</label>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col text-right">
+        <label><b>Card Holder</b></label>
+      </div>
+      <div class="col">
+        <input type="text" class="form-control is-invalid" id="cardholder" required placeholder="enter your name"
+               [(ngModel)]="creditCard.cardholder" name="cardholder">
+        <div class="invalid-feedback">Please enter your name.</div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col text-right">
+        <label><b>Card Number</b></label>
+      </div>
+      <div class="col">
+        <input type="text" class="form-control is-invalid" id="cardnumber" required placeholder="enter your card number"
+               [(ngModel)]="creditCard.cardnumber" name="cardnumber" #cardnumber="ngModel">
+        <div class="invalid-feedback">Please enter your card number.</div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col text-right">
+        <label><b>Expiry Date</b></label>
+      </div>
+      <div class="col">
+        <div class="form-group row">
+          <div class="col">
+            <select class="form-control is-invalid" id="month" name="month" required [(ngModel)]="creditCard.expiremonth">
+              <option value="01">01</option>
+            </select>
+            <div class="invalid-feedback">Please select expiry month.</div>
+          </div>
+          <div class="col">
+            <select class="form-control is-invalid" id="year" name="year" required [(ngModel)]="creditCard.expireyear">
+              <option value="18">18</option>
+            </select>
+            <div class="invalid-feedback">Please select expiry month.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col text-right">
+        <label><b>CVV</b></label>
+      </div>
+      <div class="col">
+        <input type="text" class="form-control is-invalid" id="cvv" required placeholder="cvv"
+               [(ngModel)]="creditCard.cvv" name="cvv" #cvv="ngModel">
+        <div class="invalid-feedback">Please enter your cvv number.</div>
+      </div>
+    </div>
+  </form>
+</div>
