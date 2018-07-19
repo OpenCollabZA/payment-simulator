@@ -36,4 +36,24 @@ public interface PaygateConstants {
 	String PARAM_VAULT_ID = "VAULT_ID";
 	String PARAM_PAYVAULT_DATA_1 = "PAYVAULT_DATA_1";
 	String PARAM_PAYVAULT_DATA_2 = "PAYVAULT_DATA_2";
+
+	enum PaymentResult {
+		APPROVED(PAYGATE_TRANSACTION_APPROVED, "Transaction approved"),
+		CANCELLED(PAYGATE_TRANSACTION_CANCELLED, "Transaction cancelled"),
+		NOT_DONE(PAYGATE_TRANSACTION_NOT_DONE, "Transaction could not be completed"),
+		DECLINED(PAYGATE_TRANSACTION_DECLINED, "Transaction could not be completed"),
+		USER_CANCELLED(PAYGATE_TRANSACTION_USER_CANCELLED, "User cancelled the transaction");
+
+
+		public String statusCode;
+
+		public String description;
+
+		PaymentResult(String statusCode, String description){
+			this.statusCode = statusCode;
+			this.description = description;
+		}
+
+
+	}
 }

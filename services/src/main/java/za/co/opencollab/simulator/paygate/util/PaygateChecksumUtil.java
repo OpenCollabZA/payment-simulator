@@ -8,6 +8,9 @@ import java.security.MessageDigest;
 
 import static org.apache.commons.lang.StringUtils.defaultString;
 
+/**
+ * Utitliy class for calculating checksums for various paygate entities.
+ */
 public final class PaygateChecksumUtil {
 
 	/**
@@ -17,7 +20,6 @@ public final class PaygateChecksumUtil {
 	 * @throws Exception
 	 */
 	public static String generateChecksum(PayWebRequestInfo request, final String checksumKey) throws Exception {
-
 		String concatenatedFields = "";
 		concatenatedFields += defaultString(request.getPaygateId());
 		concatenatedFields += defaultString(request.getReference());
@@ -55,7 +57,6 @@ public final class PaygateChecksumUtil {
 		concatenatedFields += response.getPayRequestId();
 		concatenatedFields += response.getReference();
 		concatenatedFields += checksumKey;
-
 		return generateMD5Hash(concatenatedFields);
 	}
 
@@ -85,7 +86,7 @@ public final class PaygateChecksumUtil {
 	}
 
 
-	public static String generateMD5Hash(String source) throws Exception {
+	private static String generateMD5Hash(String source) throws Exception {
 		MessageDigest md = MessageDigest.getInstance("MD5");
 		md.update(source.getBytes());
 		byte[] digest = md.digest();

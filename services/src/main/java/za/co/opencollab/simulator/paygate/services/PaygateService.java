@@ -14,8 +14,9 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -30,15 +31,21 @@ import static za.co.opencollab.simulator.paygate.util.PaygateFormUtil.createForm
 @Service
 public class PaygateService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PaygateService.class);
-
+    /**
+     * Single checksum key used for all clients of the simulator
+     */
     @Value("${simulator.paygate.checksumKey}")
     private String checksumKey;
 
-    private Executor executor = Executors.newSingleThreadExecutor();
+    /**
+     * Executor for async processes
+     */
+    private final Executor executor = Executors.newSingleThreadExecutor();
 
-
-    private final Map<String, PayWebRequestInfo> PAYMENTS_MAP = new HashMap<>();
+    /**
+     * Map of pending transactions
+     */
+    private final Map<String, PayWebRequestInfo> PAYMENTS_MAP = new ConcurrentHashMap<>();
 
     /**
      * Generates a new request to perform a transaction.
@@ -58,24 +65,40 @@ public class PaygateService {
         return info;
     }
 
-    public PayWebRequestInfo getRequestForPayRequestId(String id){
-        return PAYMENTS_MAP.get(id);
+    /**
+     * Gets a payment request for the specified ID.
+     * @param id ID of the request to retrieve
+     * @return
+     */
+    public Optional<PayWebRequestInfo> getRequestForPayRequestId(String id){
+        return Optional.of(PAYMENTS_MAP.get(id));
     }
 
-    private boolean sendPaymentComplete(String paygateId) throws Exception {
-        PayWebRequestInfo request = getRequestForPayRequestId(paygateId);
+    /**
+     * Completes a payment request.
+     * @param paygateId
+     * @param result
+     * @return
+     * @throws Exception
+     */
+    private boolean sendPaymentComplete(String paygateId, final PaymentResult result) throws Exception {
+        Optional<PayWebRequestInfo> requestOptional = getRequestForPayRequestId(paygateId);
+        if(!requestOptional.isPresent()){
+            throw new IllegalArgumentException(String.format("Transaction with paygate id %s does not exist", paygateId));
+        }
+        PayWebRequestInfo request = requestOptional.get();
         PayWebNotificationInfo response = new PayWebNotificationInfo();
 
 
         response.setPaygateId(RandomStringUtils.randomNumeric(10));
         response.setPayRequestId(request.getPaygateId());
         response.setReference(request.getReference());
-        response.setTransactionStatus(PAYGATE_TRANSACTION_APPROVED);
+        response.setTransactionStatus(result.statusCode);
         response.setResultCode("CODE"); // TODO
         response.setAuthCode(null); // TODO
         response.setCurrency(request.getCurrency());
         response.setAmount(request.getAmount());
-        response.setResultDesc("SUCCESS"); // TODO
+        response.setResultDesc(result.description);
         response.setTransactionId("1"); // TODO
         response.setRiskIndicator("1"); // TODO
         response.setPayMethod("CC"); // TODO
@@ -100,14 +123,20 @@ public class PaygateService {
         return "OK".equals(serviceResponse);
     }
 
-    public void completeTransaction(final String paygateId){
+    /**
+     * Completes a pending transaction. The transaction can be completed with any <code>PaymentResult</code>. eg. cancelled,
+     * approved, etc.
+     * @param paygateId ID of the transaction to complete
+     * @param result Result to complete the transaction with
+     */
+    public void completeTransaction(final String paygateId, final PaymentResult result){
         executor.execute(() -> {
             int retries = 3;
             // Paygate spec says it will retry 3 times
             while(retries > 0) {
                 try {
                     TimeUnit.SECONDS.sleep(50);
-                    boolean ok = sendPaymentComplete(paygateId);
+                    boolean ok = sendPaymentComplete(paygateId, result);
                     // Only if the request succeeded will we break.
                     if(ok){
                         break;
@@ -117,10 +146,11 @@ public class PaygateService {
                     retries--;
                 }
             }
+            this.PAYMENTS_MAP.remove(paygateId);
         });
     }
 
-    public boolean compareChecksum(final String checksum, final PayWebRequestInfo request) throws Exception {
+    boolean compareChecksum(final String checksum, final PayWebRequestInfo request) throws Exception {
         if(StringUtils.isEmpty(checksum)){
             return false;
         }
