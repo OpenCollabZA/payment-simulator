@@ -13,3 +13,6 @@ buildNumber.properties
 
 .idea/
 *.iml
+ui/node/
+ui/node_modules/
+ui/dist/
