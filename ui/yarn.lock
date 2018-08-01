@@ -255,9 +255,15 @@
     lodash "^4.17.5"
     to-fast-properties "^2.0.0"
 
-"@clr/icons@^0.12.2":
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/@clr/icons/-/icons-0.12.2.tgz#67e1e39581daddcba59a9ff197ff108ca249fef1"
+"@clr/angular@^0.12.6":
+  version "0.12.6"
+  resolved "https://registry.yarnpkg.com/repository/npm/@clr/angular/-/angular-0.12.6.tgz#4720a951d4c1e96114675344e4d90e8ef893569c"
+  dependencies:
+    tslib "^1.9.0"
+
+"@clr/icons@^0.12.6":
+  version "0.12.6"
+  resolved "https://registry.yarnpkg.com/repository/npm/@clr/icons/-/icons-0.12.6.tgz#cf578a8ea39099afda81641a59977a5dba111a21"
 
 "@ng-bootstrap/ng-bootstrap@^1.0.0":
   version "1.1.2"

@@ -9,6 +9,11 @@ import { EftComponent } from './eft/eft.component';
 import {FormsModule} from "@angular/forms";
 import {BSControlStatusDirective} from "./shared/directive/bscontrol-status.directive";
 
+import '@webcomponents/custom-elements';
+import '@clr/icons';
+import '@clr/icons/shapes/all-shapes';
+import { ClarityModule } from '@clr/angular';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,7 +25,8 @@ import {BSControlStatusDirective} from "./shared/directive/bscontrol-status.dire
   imports: [
     BrowserModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ClarityModule
   ],
   providers: [],
   bootstrap: [AppComponent]
