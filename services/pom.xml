@@ -25,7 +25,20 @@
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
         </dependency>
-
+        <dependency>
+            <groupId>za.co.opencollab.simulator</groupId>
+            <artifactId>ui</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
+    <build>
+        <finalName>payment-simulator</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

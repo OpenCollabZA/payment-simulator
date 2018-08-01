@@ -6,13 +6,9 @@
 	<artifactId>payment-simulator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<modules>
-		<module>services</module>
 		<module>ui</module>
+		<module>services</module>
 	</modules>
-	<!--	<modules>
-            <module>services</module>
-            <module>frontend</module>
-        </modules>-->
 	<packaging>pom</packaging>
 
 	<name>payment-simulator</name>

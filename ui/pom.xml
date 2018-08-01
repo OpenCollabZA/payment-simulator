@@ -24,7 +24,8 @@
   <build>
     <resources>
       <resource>
-        <directory>dist</directory>
+        <directory>dist/payment</directory>
+        <targetPath>static</targetPath>
       </resource>
     </resources>
     <plugins>
@@ -60,7 +61,7 @@
             </goals>
             <phase>generate-resources</phase>
             <configuration>
-              <arguments>build</arguments>
+              <arguments>build-prod</arguments>
             </configuration>
           </execution>
         </executions>
