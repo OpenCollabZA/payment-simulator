@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { LandingComponent } from './landing/landing.component';
 import { CreditcardComponent } from './creditcard/creditcard.component';
 import { EftComponent } from './eft/eft.component';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BSControlStatusDirective} from "./shared/directive/bscontrol-status.directive";
 
 import '@webcomponents/custom-elements';
@@ -25,6 +25,7 @@ import { ClarityModule } from '@clr/angular';
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     ClarityModule
   ],
