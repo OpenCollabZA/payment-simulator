@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import za.co.opencollab.simulator.paygate.PaygateConstants;
 import za.co.opencollab.simulator.paygate.dto.PayWebRequestInfo;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
@@ -28,6 +25,24 @@ public class PaygateUIRestService {
     @Autowired
     private PaygateService paygateService;
 
+
+    /**
+     * Get the transaction details for a paygateId
+     * @param paygateId
+     * @return
+     */
+    @GET
+    @Path("transactionDetail")
+    @Produces(MediaType.APPLICATION_JSON)
+    public PayWebRequestInfo getTransactionDetails(@QueryParam("paygateId") String paygateId){
+        Optional<PayWebRequestInfo> request = paygateService.getRequestForPayRequestId(paygateId);
+        if(request.isPresent()){
+            return request.get();
+        }
+        else{
+            throw new NotFoundException(String.format("Paygate ID %s does not exist", paygateId));
+        }
+    }
 
     /**
      * Callback when the transaction was cancelled from the front end.

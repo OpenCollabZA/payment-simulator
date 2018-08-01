@@ -8,6 +8,8 @@ import { CreditcardComponent } from './creditcard/creditcard.component';
 import { EftComponent } from './eft/eft.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BSControlStatusDirective} from "./shared/directive/bscontrol-status.directive";
+import { PaygateComponent } from './paygate/paygate.component';
+import {HttpClientModule} from "@angular/common/http";
 
 import '@webcomponents/custom-elements';
 import '@clr/icons';
@@ -20,14 +22,16 @@ import { ClarityModule } from '@clr/angular';
     LandingComponent,
     CreditcardComponent,
     EftComponent,
-    BSControlStatusDirective
+    BSControlStatusDirective,
+    PaygateComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
-    ClarityModule
+    ClarityModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

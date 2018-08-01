@@ -10,6 +10,7 @@ import za.co.opencollab.simulator.paygate.dto.PayWebNotificationInfo;
 import za.co.opencollab.simulator.paygate.dto.PayWebRequestInfo;
 import za.co.opencollab.simulator.paygate.dto.PayWebResponseInfo;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
@@ -47,6 +48,7 @@ public class PaygateService {
      */
     private final Map<String, PayWebRequestInfo> PAYMENTS_MAP = new ConcurrentHashMap<>();
 
+
     /**
      * Generates a new request to perform a transaction.
      * @param request The request from the client.
@@ -71,7 +73,7 @@ public class PaygateService {
      * @return
      */
     public Optional<PayWebRequestInfo> getRequestForPayRequestId(String id){
-        return Optional.of(PAYMENTS_MAP.get(id));
+        return Optional.ofNullable(PAYMENTS_MAP.get(id));
     }
 
     /**
