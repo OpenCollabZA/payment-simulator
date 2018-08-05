@@ -118,7 +118,7 @@ public class PaygateService {
         String notifyURL = request.getNotifyUrl();
         String serviceResponse = ClientBuilder.newClient()
                 .target(notifyURL)
-                .request(MediaType.APPLICATION_FORM_URLENCODED)
+                .request(MediaType.TEXT_HTML)
                 .post(Entity.form(form), String.class);
 
         // Specification states that the service should reply with "OK"
@@ -137,7 +137,7 @@ public class PaygateService {
             // Paygate spec says it will retry 3 times
             while(retries > 0) {
                 try {
-                    TimeUnit.SECONDS.sleep(50);
+                    TimeUnit.SECONDS.sleep(3);
                     boolean ok = sendPaymentComplete(paygateId, result);
                     // Only if the request succeeded will we break.
                     if(ok){
