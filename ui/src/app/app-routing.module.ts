@@ -29,11 +29,11 @@ const routes: Routes = [
       pathMatch : 'full',
       redirectTo: '1234567890' // This should never happen
     },
-  // { path: '**', redirectTo: '123'},
+  { path: '**', redirectTo: '1234567890' } // This should never happen
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes,{ useHash: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
