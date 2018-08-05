@@ -74,6 +74,6 @@ public class PaygateServerRestService {
     public Response processTransaction(
             @FormParam(PARAM_PAY_REQUEST_ID) String paygateId,
             @FormParam(PARAM_CHECKSUM) String reference) throws URISyntaxException {
-        return Response.temporaryRedirect(new URI("/index.html/#/" + paygateId)).build();
+        return Response.seeOther(new URI("../index.html/#/" + paygateId)).build();
     }
 }

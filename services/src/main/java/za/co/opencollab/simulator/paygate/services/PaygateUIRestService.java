@@ -77,7 +77,7 @@ public class PaygateUIRestService {
         Optional<PayWebRequestInfo> request = paygateService.getRequestForPayRequestId(paygateId);
         if(request.isPresent()){
             paygateService.completeTransaction(paygateId, PaygateConstants.PaymentResult.APPROVED);
-            return Response.temporaryRedirect(new URI(request.get().getReturnUrl())).build();
+            return Response.seeOther(new URI(request.get().getReturnUrl())).build();
         }
         else{
             return Response.status(BAD_REQUEST).build();
