@@ -6,8 +6,15 @@ import { AppComponent } from './app.component';
 import { LandingComponent } from './landing/landing.component';
 import { CreditcardComponent } from './creditcard/creditcard.component';
 import { EftComponent } from './eft/eft.component';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BSControlStatusDirective} from "./shared/directive/bscontrol-status.directive";
+import { PaygateComponent } from './paygate/paygate.component';
+import {HttpClientModule} from "@angular/common/http";
+
+import '@webcomponents/custom-elements';
+import '@clr/icons';
+import '@clr/icons/shapes/all-shapes';
+import { ClarityModule } from '@clr/angular';
 
 @NgModule({
   declarations: [
@@ -15,12 +22,16 @@ import {BSControlStatusDirective} from "./shared/directive/bscontrol-status.dire
     LandingComponent,
     CreditcardComponent,
     EftComponent,
-    BSControlStatusDirective
+    BSControlStatusDirective,
+    PaygateComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    AppRoutingModule
+    ReactiveFormsModule,
+    AppRoutingModule,
+    ClarityModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -6,13 +6,9 @@
 	<artifactId>payment-simulator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<modules>
-		<module>services</module>
 		<module>ui</module>
+		<module>services</module>
 	</modules>
-	<!--	<modules>
-            <module>services</module>
-            <module>frontend</module>
-        </modules>-->
 	<packaging>pom</packaging>
 
 	<name>payment-simulator</name>
@@ -95,6 +91,11 @@
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-rs-service-description</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-features-logging</artifactId>
 				<version>${cxf.version}</version>
 			</dependency>
 			<dependency>

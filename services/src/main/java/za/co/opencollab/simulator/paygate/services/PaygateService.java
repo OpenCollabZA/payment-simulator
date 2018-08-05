@@ -10,6 +10,7 @@ import za.co.opencollab.simulator.paygate.dto.PayWebNotificationInfo;
 import za.co.opencollab.simulator.paygate.dto.PayWebRequestInfo;
 import za.co.opencollab.simulator.paygate.dto.PayWebResponseInfo;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
@@ -47,6 +48,7 @@ public class PaygateService {
      */
     private final Map<String, PayWebRequestInfo> PAYMENTS_MAP = new ConcurrentHashMap<>();
 
+
     /**
      * Generates a new request to perform a transaction.
      * @param request The request from the client.
@@ -71,7 +73,7 @@ public class PaygateService {
      * @return
      */
     public Optional<PayWebRequestInfo> getRequestForPayRequestId(String id){
-        return Optional.of(PAYMENTS_MAP.get(id));
+        return Optional.ofNullable(PAYMENTS_MAP.get(id));
     }
 
     /**
@@ -116,7 +118,7 @@ public class PaygateService {
         String notifyURL = request.getNotifyUrl();
         String serviceResponse = ClientBuilder.newClient()
                 .target(notifyURL)
-                .request(MediaType.APPLICATION_FORM_URLENCODED)
+                .request(MediaType.TEXT_HTML)
                 .post(Entity.form(form), String.class);
 
         // Specification states that the service should reply with "OK"
@@ -135,7 +137,7 @@ public class PaygateService {
             // Paygate spec says it will retry 3 times
             while(retries > 0) {
                 try {
-                    TimeUnit.SECONDS.sleep(50);
+                    TimeUnit.SECONDS.sleep(3);
                     boolean ok = sendPaymentComplete(paygateId, result);
                     // Only if the request succeeded will we break.
                     if(ok){

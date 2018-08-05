@@ -1,9 +1,16 @@
 package za.co.opencollab.simulator.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Server;
+import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +23,7 @@ import org.springframework.context.annotation.ImportResource;
 import javax.ws.rs.Path;
 import javax.ws.rs.ext.Provider;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -50,7 +58,22 @@ public class CxfConfiguration {
 		factory.setAddress("/");
 		factory.setServiceBeans(serviceBeans);
 		factory.setProviders(providers);
+		factory.setFeatures(Collections.singletonList(new LoggingFeature()));
 		return factory.create();
 	}
 
+	@Bean
+	public JacksonJsonProvider jsonProvider(ObjectMapper objectMapper) {
+		JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
+		provider.setMapper(objectMapper);
+		return provider;
+	}
+
+	@Bean
+	public ObjectMapper objectMapper() {
+		return new ObjectMapper()
+				.registerModule(new JavaTimeModule())
+				.configure(SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
+				.configure(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false);
+	}
 }
