@@ -31,6 +31,9 @@ pipeline {
 			}
 		}
 		stage ("docker"){
+			when {
+				branch 'master'
+			}
 			steps {
 				fileOperations([
 						fileRenameOperation(
