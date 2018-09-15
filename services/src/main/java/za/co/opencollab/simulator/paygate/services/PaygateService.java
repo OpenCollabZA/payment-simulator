@@ -32,11 +32,15 @@ import static za.co.opencollab.simulator.paygate.util.PaygateFormUtil.createForm
 @Service
 public class PaygateService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PaygateService.class);
+
     /**
      * Single checksum key used for all clients of the simulator
      */
     @Value("${simulator.paygate.checksumKey}")
     private String checksumKey;
+
+
 
     /**
      * Executor for async processes
@@ -84,6 +88,8 @@ public class PaygateService {
      * @throws Exception
      */
     private boolean sendPaymentComplete(String paygateId, final PaymentResult result) throws Exception {
+        LOG.info("Sending payment complete: " + paygateId);
+
         Optional<PayWebRequestInfo> requestOptional = getRequestForPayRequestId(paygateId);
         if(!requestOptional.isPresent()){
             throw new IllegalArgumentException(String.format("Transaction with paygate id %s does not exist", paygateId));
@@ -154,8 +160,14 @@ public class PaygateService {
 
     boolean compareChecksum(final String checksum, final PayWebRequestInfo request) throws Exception {
         if(StringUtils.isEmpty(checksum)){
+            LOG.warn("Checksum is empty");
             return false;
         }
-        return checksum.equals(generateChecksum(request, checksumKey));
+        String generatedChecksum = generateChecksum(request, checksumKey);
+        LOG.info("Checksum key: " + checksumKey);
+        LOG.info("Generated checksum: " + generatedChecksum);
+        LOG.info("Provided  checksum: " + checksum);
+
+        return checksum.equals(generatedChecksum);
     }
 }

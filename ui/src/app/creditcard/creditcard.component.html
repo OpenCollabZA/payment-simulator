@@ -3,7 +3,7 @@
 </div>
 <br>
 <div>
-  <form [formGroup]="creditCardForm" (submit)="pay($event)" action="/rest/ui/complete" method="POST">
+  <form [formGroup]="creditCardForm" (submit)="pay($event)" action="rest/ui/complete" method="POST">
     <input type="hidden" name="PAY_REQUEST_ID" [value]="paygateId">
     <div class="form-group row">
       <div class="col text-right">

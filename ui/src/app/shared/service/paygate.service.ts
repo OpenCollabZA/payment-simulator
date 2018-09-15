@@ -12,7 +12,7 @@ export class PaygateService{
   }
 
   getTransactionDetail(paygateId: string){
-    return this.http.get<PayWebRequestInfo>('/rest/ui/transactionDetail',{
+    return this.http.get<PayWebRequestInfo>('rest/ui/transactionDetail',{
       params : {
         paygateId: paygateId
       }
