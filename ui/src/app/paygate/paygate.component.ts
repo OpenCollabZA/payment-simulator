@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from "rxjs";
 import {ActivatedRoute, Params} from "@angular/router";
 import {PaygateService} from "../shared/service/paygate.service";
+import {PayWebRequestInfo} from "../shared/model/pay-web-request.info";
 
 @Component({
   selector: 'app-paygate',
@@ -9,6 +10,8 @@ import {PaygateService} from "../shared/service/paygate.service";
   styleUrls: ['./paygate.component.css']
 })
 export class PaygateComponent  implements OnInit, OnDestroy {
+
+  transactionDetails: PayWebRequestInfo;
 
   paramsSubscription: Subscription;
 
@@ -29,7 +32,7 @@ export class PaygateComponent  implements OnInit, OnDestroy {
   private loadTransactionDetails(paygateId: string){
     console.log("loading " + paygateId);
     this.paygateService.getTransactionDetail(this.paygateId).subscribe((transactionDetail)=> {
-      console.log(transactionDetail)
+      this.transactionDetails = transactionDetail;
     })
   }
 

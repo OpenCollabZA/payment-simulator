@@ -1,3 +1,9 @@
 simulator:
   paygate:
     checksumKey: secret
+
+server:
+  port: 8080
+  servlet:
+    # This should match the baseHref in index.html
+    context-path: /payment
