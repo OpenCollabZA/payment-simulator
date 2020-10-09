@@ -1,0 +1,169 @@
+* text eol=crlf eol=crlf
+
+## SOURCE CODE
+*.bat    text eol=crlf
+*.coffee text eol=crlf
+*.css    text eol=crlf
+*.htm    text eol=crlf
+*.html   text eol=crlf
+*.inc    text eol=crlf
+*.ini    text eol=crlf
+*.js     text eol=crlf
+*.java   text eol=crlf
+*.jsx    text eol=crlf
+*.json   text eol=crlf
+*.less   text eol=crlf
+*.php    text eol=crlf
+*.pl     text eol=crlf
+*.py     text eol=crlf
+*.rb     text eol=crlf
+*.sass   text eol=crlf
+*.scm    text eol=crlf
+*.scss   text eol=crlf
+*.sh     text eol=lf
+*.sql    text eol=crlf
+*.styl   text eol=crlf
+*.ts     text eol=crlf
+*.xml    text eol=crlf
+*.xhtml  text eol=crlf
+
+## DOCUMENTATION
+*.markdown   text eol=crlf
+*.md         text eol=crlf
+*.mdwn       text eol=crlf
+*.mdown      text eol=crlf
+*.mkd        text eol=crlf
+*.mkdn       text eol=crlf
+*.mdtxt      text eol=crlf
+*.mdtext eol=crlf     text eol=crlf
+*.txt        text eol=crlf
+AUTHORS      text eol=crlf
+CHANGELOG    text eol=crlf
+CHANGES      text eol=crlf
+CONTRIBUTING text eol=crlf
+COPYING      text eol=crlf
+INSTALL      text eol=crlf
+license      text eol=crlf
+LICENSE      text eol=crlf
+NEWS         text eol=crlf
+readme       text eol=crlf
+*README*     text eol=crlf
+TODO         text eol=crlf
+
+## TEMPLATES
+*.dot        text eol=crlf
+*.ejs        text eol=crlf
+*.haml       text eol=crlf
+*.handlebars text eol=crlf
+*.hbs        text eol=crlf
+*.hbt        text eol=crlf
+*.jade       text eol=crlf
+*.latte      text eol=crlf
+*.mustache   text eol=crlf
+*.phtml      text eol=crlf
+*.tmpl       text eol=crlf
+
+## LINTERS
+.csslintrc    text eol=crlf
+.eslintrc     text eol=crlf
+.jscsrc       text eol=crlf
+.jshintrc     text eol=crlf
+.jshintignore text eol=crlf
+.stylelintrc  text eol=crlf
+
+## CONFIGS
+*.bowerrc      text eol=crlf
+*.cnf          text eol=crlf
+*.conf         text eol=crlf
+*.config       text eol=crlf
+.editorconfig  text eol=crlf
+.gitattributes text eol=crlf
+.gitconfig     text eol=crlf
+.gitignore     text eol=crlf
+.htaccess      text eol=crlf
+*.npmignore    text eol=crlf
+*.yaml         text eol=crlf
+*.yml          text eol=crlf
+Makefile       text eol=crlf
+makefile       text eol=crlf
+
+## HEROKU
+Procfile       text eol=crlf
+.slugignore    text eol=crlf
+
+## GRAPHICS
+*.ai   binary
+*.bmp  binary
+*.eps  binary
+*.gif  binary
+*.ico  binary
+*.jng  binary
+*.jp2  binary
+*.jpg  binary
+*.jpeg binary
+*.jpx  binary
+*.jxr  binary
+*.pdf  binary
+*.png  binary
+*.psb  binary
+*.psd  binary
+*.svg  text eol=crlf
+*.svgz binary
+*.tif  binary
+*.tiff binary
+*.wbmp binary
+*.webp binary
+
+## AUDIO
+*.kar  binary
+*.m4a  binary
+*.mid  binary
+*.midi binary
+*.mp3  binary
+*.ogg  binary
+*.ra   binary
+
+## VIDEO
+*.3gpp binary
+*.3gp  binary
+*.as   binary
+*.asf  binary
+*.asx  binary
+*.fla  binary
+*.flv  binary
+*.m4v  binary
+*.mng  binary
+*.mov  binary
+*.mp4  binary
+*.mpeg binary
+*.mpg  binary
+*.swc  binary
+*.swf  binary
+*.webm binary
+
+## MS Office
+*.xlsx binary
+*.xls binary
+
+
+## ARCHIVES
+*.7z  binary
+*.gz  binary
+*.rar binary
+*.tar binary
+*.zip binary
+*.jar binary
+
+## FONTS
+*.ttf   binary
+*.eot   binary
+*.otf   binary
+*.woff  binary
+*.woff2 binary
+
+## EXECUTABLES
+*.exe binary
+*.pyc binary
+
+# JASPER
+*.jasper binary

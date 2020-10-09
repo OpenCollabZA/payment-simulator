@@ -6,7 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import za.co.opencollab.simulator.paygate.dto.PayWebCompleteResponse;
 import za.co.opencollab.simulator.paygate.dto.PayWebNotificationInfo;
+import za.co.opencollab.simulator.paygate.dto.PayWebRedirect;
 import za.co.opencollab.simulator.paygate.dto.PayWebRequestInfo;
 import za.co.opencollab.simulator.paygate.dto.PayWebResponseInfo;
 
@@ -15,6 +17,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
+import java.security.InvalidParameterException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import static za.co.opencollab.simulator.paygate.PaygateConstants.*;
 import static za.co.opencollab.simulator.paygate.util.PaygateChecksumUtil.generateChecksum;
+import static za.co.opencollab.simulator.paygate.util.PaygateChecksumUtil.generateChecksumForRedirect;
 import static za.co.opencollab.simulator.paygate.util.PaygateFormUtil.createForm;
 
 /**
@@ -32,11 +36,15 @@ import static za.co.opencollab.simulator.paygate.util.PaygateFormUtil.createForm
 @Service
 public class PaygateService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(PaygateService.class);
+
     /**
      * Single checksum key used for all clients of the simulator
      */
     @Value("${simulator.paygate.checksumKey}")
     private String checksumKey;
+
+
 
     /**
      * Executor for async processes
@@ -78,15 +86,17 @@ public class PaygateService {
 
     /**
      * Completes a payment request.
-     * @param paygateId
+     * @param payRequestId
      * @param result
      * @return
      * @throws Exception
      */
-    private boolean sendPaymentComplete(String paygateId, final PaymentResult result) throws Exception {
-        Optional<PayWebRequestInfo> requestOptional = getRequestForPayRequestId(paygateId);
+    private boolean sendPaymentComplete(String payRequestId, final PaymentResult result) throws Exception {
+        LOG.info("Sending payment complete: " + payRequestId);
+
+        Optional<PayWebRequestInfo> requestOptional = getRequestForPayRequestId(payRequestId);
         if(!requestOptional.isPresent()){
-            throw new IllegalArgumentException(String.format("Transaction with paygate id %s does not exist", paygateId));
+            throw new IllegalArgumentException(String.format("Transaction with paygate id %s does not exist", payRequestId));
         }
         PayWebRequestInfo request = requestOptional.get();
         PayWebNotificationInfo response = new PayWebNotificationInfo();
@@ -131,14 +141,14 @@ public class PaygateService {
      * @param paygateId ID of the transaction to complete
      * @param result Result to complete the transaction with
      */
-    public void completeTransaction(final String paygateId, final PaymentResult result){
+    public PayWebCompleteResponse completeTransaction(final String payRequestId, final PaymentResult result) throws Exception {
         executor.execute(() -> {
             int retries = 3;
             // Paygate spec says it will retry 3 times
             while(retries > 0) {
                 try {
                     TimeUnit.SECONDS.sleep(3);
-                    boolean ok = sendPaymentComplete(paygateId, result);
+                    boolean ok = sendPaymentComplete(payRequestId, result);
                     // Only if the request succeeded will we break.
                     if(ok){
                         break;
@@ -148,14 +158,30 @@ public class PaygateService {
                     retries--;
                 }
             }
-            this.PAYMENTS_MAP.remove(paygateId);
+            this.PAYMENTS_MAP.remove(payRequestId);
         });
+        PayWebRequestInfo request = getRequestForPayRequestId(payRequestId).orElseThrow(InvalidParameterException::new);
+        PayWebCompleteResponse completeResponse = new PayWebCompleteResponse();
+        PayWebRedirect redirect = new PayWebRedirect();
+        redirect.setPayRequestId(payRequestId);
+        redirect.setTransactionStatus(1);
+        redirect.setChecksum(generateChecksumForRedirect(request, redirect, checksumKey)); // TODO generate proper checksum
+
+        completeResponse.setPayWebRedirect(redirect);
+        completeResponse.setRedirectUrl(request.getReturnUrl());
+        return completeResponse;
     }
 
     boolean compareChecksum(final String checksum, final PayWebRequestInfo request) throws Exception {
         if(StringUtils.isEmpty(checksum)){
+            LOG.warn("Checksum is empty");
             return false;
         }
-        return checksum.equals(generateChecksum(request, checksumKey));
+        String generatedChecksum = generateChecksum(request, checksumKey);
+        LOG.info("Checksum key: " + checksumKey);
+        LOG.info("Generated checksum: " + generatedChecksum);
+        LOG.info("Provided  checksum: " + checksum);
+
+        return checksum.equals(generatedChecksum);
     }
 }
