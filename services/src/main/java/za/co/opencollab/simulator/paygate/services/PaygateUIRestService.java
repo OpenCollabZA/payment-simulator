@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import za.co.opencollab.simulator.paygate.PaygateConstants;
+import za.co.opencollab.simulator.paygate.dto.PayWebCompleteResponse;
+import za.co.opencollab.simulator.paygate.dto.PayWebRedirect;
 import za.co.opencollab.simulator.paygate.dto.PayWebRequestInfo;
 
 import javax.ws.rs.*;
@@ -61,7 +63,11 @@ public class PaygateUIRestService {
     public Response cancelTransaction(@FormParam(PARAM_PAY_REQUEST_ID) String paygateId) throws URISyntaxException {
         Optional<PayWebRequestInfo> request = paygateService.getRequestForPayRequestId(paygateId);
         if(request.isPresent()){
-            paygateService.completeTransaction(paygateId, PaygateConstants.PaymentResult.USER_CANCELLED);
+            try {
+                paygateService.completeTransaction(paygateId, PaymentResult.USER_CANCELLED);
+            } catch (Exception e) {
+                throw new BadRequestException("Exception", e);
+            }
             return Response.temporaryRedirect(new URI(request.get().getReturnUrl())).build();
         }
         else{
@@ -77,15 +83,19 @@ public class PaygateUIRestService {
      */
     @POST
     @Path("complete")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response completeTransaction(@FormParam(PARAM_PAY_REQUEST_ID) String paygateId) throws URISyntaxException {
-        Optional<PayWebRequestInfo> request = paygateService.getRequestForPayRequestId(paygateId);
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public PayWebCompleteResponse completeTransaction(@QueryParam("payRequestId") String payRequestId) throws URISyntaxException {
+        Optional<PayWebRequestInfo> request = paygateService.getRequestForPayRequestId(payRequestId);
         if(request.isPresent()){
-            paygateService.completeTransaction(paygateId, PaygateConstants.PaymentResult.APPROVED);
-            return Response.seeOther(new URI(request.get().getReturnUrl())).build();
+            try {
+                return paygateService.completeTransaction(payRequestId, PaymentResult.APPROVED);
+            } catch (Exception e) {
+                throw new BadRequestException("Invalid id", e);
+            }
         }
         else{
-            return Response.status(BAD_REQUEST).build();
+            throw new BadRequestException("Invalid id");
         }
     }
 }

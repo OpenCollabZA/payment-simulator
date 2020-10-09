@@ -1,6 +1,7 @@
 package za.co.opencollab.simulator.paygate.util;
 
 import za.co.opencollab.simulator.paygate.dto.PayWebNotificationInfo;
+import za.co.opencollab.simulator.paygate.dto.PayWebRedirect;
 import za.co.opencollab.simulator.paygate.dto.PayWebRequestInfo;
 import za.co.opencollab.simulator.paygate.dto.PayWebResponseInfo;
 
@@ -43,7 +44,16 @@ public final class PaygateChecksumUtil {
 		return generateMD5Hash(concatenatedFields);
 	}
 
+	public static String generateChecksumForRedirect(PayWebRequestInfo payWebRequestInfo, PayWebRedirect redirect, String checksumKey) throws Exception {
+		String concatenatedFields = "";
+		concatenatedFields += defaultString(payWebRequestInfo.getPaygateId());
+		concatenatedFields += defaultString(redirect.getPayRequestId());
+		concatenatedFields += defaultString(Integer.toString(redirect.getTransactionStatus()));
+		concatenatedFields += defaultString(payWebRequestInfo.getReference());
+		concatenatedFields += checksumKey;
 
+		return generateMD5Hash(concatenatedFields);
+	}
 
 	/**
 	 * Generate the checksum for a <code>PayWebRequestInfo</code>
