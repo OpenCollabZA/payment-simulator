@@ -60,19 +60,16 @@ public class PaygateUIRestService {
     @POST
     @Path("cancel")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response cancelTransaction(@FormParam(PARAM_PAY_REQUEST_ID) String paygateId) throws URISyntaxException {
+    public PayWebCompleteResponse cancelTransaction(@QueryParam("payRequestId") String paygateId) throws URISyntaxException {
         Optional<PayWebRequestInfo> request = paygateService.getRequestForPayRequestId(paygateId);
         if(request.isPresent()){
             try {
-                paygateService.completeTransaction(paygateId, PaymentResult.USER_CANCELLED);
+                return paygateService.completeTransaction(paygateId, PaymentResult.USER_CANCELLED);
             } catch (Exception e) {
-                throw new BadRequestException("Exception", e);
+                throw new BadRequestException("Exception handling request", e);
             }
-            return Response.temporaryRedirect(new URI(request.get().getReturnUrl())).build();
         }
-        else{
-            return Response.status(BAD_REQUEST).build();
-        }
+        throw new BadRequestException("Invalid id");
     }
 
     /**
@@ -91,11 +88,9 @@ public class PaygateUIRestService {
             try {
                 return paygateService.completeTransaction(payRequestId, PaymentResult.APPROVED);
             } catch (Exception e) {
-                throw new BadRequestException("Invalid id", e);
+                throw new BadRequestException("Exception handling request", e);
             }
         }
-        else{
-            throw new BadRequestException("Invalid id");
-        }
+        throw new BadRequestException("Invalid id");
     }
 }

@@ -31,6 +31,14 @@ export class PaygateService{
     });
   }
 
+  cancelTransaction(payRequestId: string) : Observable<PayWebCompleteResponse>{
+    return this.http.post<PayWebCompleteResponse>('rest/ui/cancel',null, {
+      params : {
+        payRequestId: payRequestId
+      }
+    });
+  }
+
   /**
    * Submit and redirect to the paygate portal for payment
    */
