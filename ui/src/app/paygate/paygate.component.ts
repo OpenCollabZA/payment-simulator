@@ -33,13 +33,19 @@ export class PaygateComponent  implements OnInit, OnDestroy {
     console.log("loading " + paygateId);
     this.paygateService.getTransactionDetail(this.paygateId).subscribe((transactionDetail)=> {
       this.transactionDetails = transactionDetail;
-    })
+    });
   }
 
   ngOnDestroy(): void {
     if(this.paramsSubscription !== null){
       this.paramsSubscription.unsubscribe();
     }
+  }
+
+  userCancel(){
+    this.paygateService.cancelTransaction(this.paygateId).subscribe((payWebCompleteResponse)=> {
+      this.paygateService.performRedirect(payWebCompleteResponse);
+    })
   }
 
 }

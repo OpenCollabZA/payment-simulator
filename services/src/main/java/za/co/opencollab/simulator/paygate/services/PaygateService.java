@@ -12,7 +12,6 @@ import za.co.opencollab.simulator.paygate.dto.PayWebRedirect;
 import za.co.opencollab.simulator.paygate.dto.PayWebRequestInfo;
 import za.co.opencollab.simulator.paygate.dto.PayWebResponseInfo;
 
-import javax.annotation.PostConstruct;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
@@ -91,8 +90,8 @@ public class PaygateService {
      * @return
      * @throws Exception
      */
-    private boolean sendPaymentComplete(String payRequestId, final PaymentResult result) throws Exception {
-        LOG.info("Sending payment complete: " + payRequestId);
+    private boolean sendPaymentNotification(String payRequestId, final PaymentResult result) throws Exception {
+        LOG.info("Sending payment notification: " + payRequestId);
 
         Optional<PayWebRequestInfo> requestOptional = getRequestForPayRequestId(payRequestId);
         if(!requestOptional.isPresent()){
@@ -138,7 +137,7 @@ public class PaygateService {
     /**
      * Completes a pending transaction. The transaction can be completed with any <code>PaymentResult</code>. eg. cancelled,
      * approved, etc.
-     * @param paygateId ID of the transaction to complete
+     * @param payRequestId ID of the transaction to complete
      * @param result Result to complete the transaction with
      */
     public PayWebCompleteResponse completeTransaction(final String payRequestId, final PaymentResult result) throws Exception {
@@ -148,7 +147,7 @@ public class PaygateService {
             while(retries > 0) {
                 try {
                     TimeUnit.SECONDS.sleep(3);
-                    boolean ok = sendPaymentComplete(payRequestId, result);
+                    boolean ok = sendPaymentNotification(payRequestId, result);
                     // Only if the request succeeded will we break.
                     if(ok){
                         break;
@@ -165,7 +164,7 @@ public class PaygateService {
         PayWebRedirect redirect = new PayWebRedirect();
         redirect.setPayRequestId(payRequestId);
         redirect.setTransactionStatus(1);
-        redirect.setChecksum(generateChecksumForRedirect(request, redirect, checksumKey)); // TODO generate proper checksum
+        redirect.setChecksum(generateChecksumForRedirect(request, redirect, checksumKey));
 
         completeResponse.setPayWebRedirect(redirect);
         completeResponse.setRedirectUrl(request.getReturnUrl());
