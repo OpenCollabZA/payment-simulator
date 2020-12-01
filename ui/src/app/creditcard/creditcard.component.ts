@@ -43,10 +43,16 @@ export class CreditcardComponent implements OnInit {
     })
   }
 
+  declineTransaction(){
+    const formValue = this.creditCardForm.value;
+    this.paygateService.declineTransaction(formValue.payRequestId).subscribe((completeResponse) => {
+      this.paygateService.performRedirect(completeResponse);
+    });
+  }
+
   pay($event: Event){
     $event.preventDefault();
     $event.stopImmediatePropagation();
-    // action="rest/ui/complete"
     const formValue = this.creditCardForm.value;
     this.paygateService.completeTransaction(formValue.payRequestId).subscribe((completeResponse) => {
       this.paygateService.performRedirect(completeResponse);

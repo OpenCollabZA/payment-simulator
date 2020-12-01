@@ -11,7 +11,6 @@ import {BSControlStatusDirective} from "./shared/directive/bscontrol-status.dire
 import { PaygateComponent } from './paygate/paygate.component';
 import {HttpClientModule} from "@angular/common/http";
 
-import '@webcomponents/custom-elements';
 import '@clr/icons';
 import '@clr/icons/shapes/all-shapes';
 import { ClarityModule } from '@clr/angular';

@@ -1,6 +1,6 @@
 {
-  "/rest": {
-    "target": "http://localhost:8080",
+  "/payment/rest": {
+    "target": "http://localhost:8081",
     "secure": false
   }
 }

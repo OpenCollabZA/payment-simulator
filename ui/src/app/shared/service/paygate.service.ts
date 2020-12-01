@@ -5,6 +5,7 @@ import {Observable} from "rxjs";
 import {PayWebRedirect} from '../model/pay-web-redirect';
 import {isNil} from 'lodash';
 import {PayWebCompleteResponse} from '../model/pay-web-complete-response.info';
+import {PaygateConstants} from "../model/paygate.constants";
 
 @Injectable({
   providedIn: 'root'
@@ -23,20 +24,27 @@ export class PaygateService{
     });
   }
 
-  completeTransaction(payRequestId: string) : Observable<PayWebCompleteResponse> {
+
+
+  private sendCompleteTransaction(payRequestId: string, resultCode: string) : Observable<PayWebCompleteResponse> {
     return this.http.post<PayWebCompleteResponse>('rest/ui/complete',null, {
       params : {
-        payRequestId: payRequestId
+        payRequestId: payRequestId,
+        resultCode
       }
     });
   }
 
+  completeTransaction(payRequestId: string){
+    return this.sendCompleteTransaction(payRequestId, PaygateConstants.PAYGATE_TRANSACTION_APPROVED);
+  }
+
   cancelTransaction(payRequestId: string) : Observable<PayWebCompleteResponse>{
-    return this.http.post<PayWebCompleteResponse>('rest/ui/cancel',null, {
-      params : {
-        payRequestId: payRequestId
-      }
-    });
+    return this.sendCompleteTransaction(payRequestId, PaygateConstants.PAYGATE_TRANSACTION_CANCELLED);
+  }
+
+  declineTransaction(payRequestId: string) : Observable<PayWebCompleteResponse>{
+    return this.sendCompleteTransaction(payRequestId, PaygateConstants.PAYGATE_TRANSACTION_DECLINED);
   }
 
   /**
