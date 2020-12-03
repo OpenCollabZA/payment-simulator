@@ -54,6 +54,12 @@ public interface PaygateConstants {
 			this.description = description;
 		}
 
+		public static PaymentResult getByCode(String code) {
+			for(PaymentResult e : values()) {
+				if(e.statusCode.equals(code)) return e;
+			}
+			return null;
+		}
 
 	}
 }

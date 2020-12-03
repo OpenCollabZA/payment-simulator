@@ -58,35 +58,14 @@ public class PaygateUIRestService {
      * @return
      */
     @POST
-    @Path("cancel")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public PayWebCompleteResponse cancelTransaction(@QueryParam("payRequestId") String paygateId) throws URISyntaxException {
-        Optional<PayWebRequestInfo> request = paygateService.getRequestForPayRequestId(paygateId);
-        if(request.isPresent()){
-            try {
-                return paygateService.completeTransaction(paygateId, PaymentResult.USER_CANCELLED);
-            } catch (Exception e) {
-                throw new BadRequestException("Exception handling request", e);
-            }
-        }
-        throw new BadRequestException("Invalid id");
-    }
-
-    /**
-     * Callback when the transaction was cancelled from the front end.
-     * The front-end should do a full-screen POST (not ajax) so that the browser can be redirected
-     * back to the client application
-     * @return
-     */
-    @POST
     @Path("complete")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public PayWebCompleteResponse completeTransaction(@QueryParam("payRequestId") String payRequestId) throws URISyntaxException {
+    public PayWebCompleteResponse completeTransaction(@QueryParam("payRequestId") String payRequestId, @QueryParam("resultCode") String resultCode) throws URISyntaxException {
         Optional<PayWebRequestInfo> request = paygateService.getRequestForPayRequestId(payRequestId);
         if(request.isPresent()){
             try {
-                return paygateService.completeTransaction(payRequestId, PaymentResult.APPROVED);
+                return paygateService.completeTransaction(payRequestId, PaymentResult.getByCode(resultCode));
             } catch (Exception e) {
                 throw new BadRequestException("Exception handling request", e);
             }

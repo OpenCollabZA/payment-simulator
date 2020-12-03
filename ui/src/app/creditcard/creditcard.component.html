@@ -18,7 +18,7 @@
         <label><b>Card Holder</b></label>
       </div>
       <div class="col">
-        <input type="text" class="form-control is-invalid" id="cardholder" required placeholder="enter your name"
+        <input type="text" class="form-control" id="cardholder" required placeholder="enter your name"
                formControlName="cardholder" name="cardholder">
         <div class="invalid-feedback">Please enter your name.</div>
       </div>
@@ -28,7 +28,7 @@
         <label><b>Card Number</b></label>
       </div>
       <div class="col">
-        <input type="text" class="form-control is-invalid" id="cardnumber" required placeholder="enter your card number"
+        <input type="text" class="form-control" id="cardnumber" required placeholder="enter your card number"
                formControlName="cardnumber" name="cardnumber">
         <div class="invalid-feedback">Please enter your card number.</div>
       </div>
@@ -40,7 +40,7 @@
       <div class="col-6">
         <div class="row">
           <div class="col">
-            <select class="form-control is-invalid" id="month" name="month" required formControlName="expiremonth">
+            <select class="form-control" id="month" name="month" required formControlName="expiremonth">
               <option value="1">01</option>
               <option value="2">02</option>
               <option value="3">03</option>
@@ -57,7 +57,7 @@
             <div class="invalid-feedback">Please select expiry month.</div>
           </div>
           <div class="col">
-            <select class="form-control is-invalid" id="year" name="year" required formControlName="expireyear">
+            <select class="form-control" id="year" name="year" required formControlName="expireyear">
               <option [value]="expiryYear" *ngFor="let expiryYear of expiryYears">{{expiryYear}}</option>
             </select>
             <div class="invalid-feedback">Please select expiry month.</div>
@@ -70,13 +70,14 @@
         <label><b>CVV</b></label>
       </div>
       <div class="col-3">
-        <input type="text" class="form-control is-invalid" id="cvv" required placeholder="cvv"
+        <input type="text" class="form-control" id="cvv" required placeholder="cvv"
                formControlName="cvv" name="cvv">
         <div class="invalid-feedback">Please enter your cvv number.</div>
       </div>
     </div>
     <div class="form-group row">
       <div class="col text-right">
+        <button type="button" class="btn btn-warning mr-3" (click)="declineTransaction()">Decline</button>
         <button type="submit" class="btn btn-primary">Pay</button>
       </div>
     </div>
