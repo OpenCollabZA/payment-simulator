@@ -27,7 +27,7 @@
     "@webcomponents/webcomponentsjs": "^2.0.0",
     "bootstrap": "^4.5.3",
     "core-js": "^2.5.4",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "rxjs": "^6.0.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
